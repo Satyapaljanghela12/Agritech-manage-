@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Cloud, CloudRain, Sun, Wind, Droplets, Eye, Gauge } from 'lucide-react';
+import { Cloud, CloudRain, Sun, Wind, Droplets, Eye, Gauge, MapPin, RefreshCw } from 'lucide-react';
+import { getCurrentLocation, reverseGeocode, getLocationString, LocationData } from '../utils/geolocation';
 
 interface WeatherData {
   location: string;
@@ -15,25 +16,75 @@ interface WeatherData {
 
 interface WeatherWidgetProps {
   location?: string;
+  useGeolocation?: boolean;
 }
 
-export const WeatherWidget = ({ location = 'New York' }: WeatherWidgetProps) => {
+export const WeatherWidget = ({ location, useGeolocation = true }: WeatherWidgetProps) => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [locationData, setLocationData] = useState<LocationData | null>(null);
+  const [usingGeolocation, setUsingGeolocation] = useState(useGeolocation);
 
   useEffect(() => {
-    fetchWeather();
-    const interval = setInterval(fetchWeather, 600000);
+    initializeWeather();
+    const interval = setInterval(initializeWeather, 600000);
     return () => clearInterval(interval);
-  }, [location]);
+  }, [location, usingGeolocation]);
 
-  const fetchWeather = async () => {
+  const initializeWeather = async () => {
+    if (usingGeolocation && !location) {
+      try {
+        const coords = await getCurrentLocation();
+        const locData = await reverseGeocode(coords);
+        setLocationData(locData);
+        await fetchWeatherByCoords(coords.latitude, coords.longitude);
+      } catch (err) {
+        console.error('Geolocation error:', err);
+        setUsingGeolocation(false);
+        await fetchWeather('New York');
+      }
+    } else {
+      await fetchWeather(location || 'New York');
+    }
+  };
+
+  const fetchWeatherByCoords = async (lat: number, lon: number) => {
+    try {
+      const apiKey = 'bd5e9d45dbfd4c539f014746252910';
+      const response = await fetch(
+        `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${lat},${lon}&aqi=no`
+      );
+
+      if (!response.ok) throw new Error('Failed to fetch weather');
+
+      const data = await response.json();
+      setWeather({
+        location: data.location.name + ', ' + data.location.country,
+        temperature: data.current.temp_c,
+        feels_like: data.current.feelslike_c,
+        humidity: data.current.humidity,
+        wind_speed: data.current.wind_kph,
+        description: data.current.condition.text,
+        icon: data.current.condition.icon,
+        visibility: data.current.vis_km,
+        pressure: data.current.pressure_mb,
+      });
+      setError('');
+    } catch (err) {
+      setError('Unable to fetch weather data');
+      console.error('Weather fetch error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchWeather = async (loc: string) => {
     try {
       const apiKey = 'bd5e9d45dbfd4c539f014746252910';
       const response = await fetch(
         `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${encodeURIComponent(
-          location
+          loc
         )}&aqi=no`
       );
 
@@ -90,12 +141,35 @@ export const WeatherWidget = ({ location = 'New York' }: WeatherWidgetProps) => 
     );
   }
 
+  const handleRefresh = () => {
+    setLoading(true);
+    initializeWeather();
+  };
+
   return (
     <div className="bg-gradient-to-br from-blue-50 to-cyan-100 rounded-xl p-6 border border-blue-200">
       <div className="flex items-center justify-between mb-4">
-        <div>
-          <h3 className="font-semibold text-gray-800 text-lg">Weather</h3>
-          <p className="text-sm text-gray-600">{weather.location}</p>
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="font-semibold text-gray-800 text-lg">Weather</h3>
+            <button
+              onClick={handleRefresh}
+              className="p-1 hover:bg-blue-200 rounded transition"
+              title="Refresh weather data"
+            >
+              <RefreshCw className="w-4 h-4 text-blue-700" />
+            </button>
+          </div>
+          <div className="flex items-center gap-1">
+            {locationData && usingGeolocation && (
+              <MapPin className="w-3 h-3 text-blue-600" />
+            )}
+            <p className="text-sm text-gray-600">
+              {locationData && usingGeolocation
+                ? getLocationString(locationData)
+                : weather.location}
+            </p>
+          </div>
         </div>
         {getWeatherIcon(weather.description)}
       </div>

@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { WeatherWidget } from '../components/WeatherWidget';
-import { LocationMap } from '../components/LocationMap';
 import {
   MapPin,
   Wheat,
@@ -12,6 +10,7 @@ import {
   TrendingDown,
   AlertCircle,
   Calendar,
+  ArrowRight,
 } from 'lucide-react';
 
 interface DashboardStats {
@@ -25,7 +24,11 @@ interface DashboardStats {
   profitLoss: number;
 }
 
-export const Dashboard = () => {
+interface DashboardProps {
+  onNavigate?: (page: string) => void;
+}
+
+export const Dashboard = ({ onNavigate }: DashboardProps = {}) => {
   const { user, profile } = useAuth();
   const [stats, setStats] = useState<DashboardStats>({
     totalLand: 0,
@@ -140,6 +143,12 @@ export const Dashboard = () => {
     }
   };
 
+  const handleNavigate = (page: string) => {
+    if (onNavigate) {
+      onNavigate(page);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -156,44 +165,64 @@ export const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl p-6 border border-gray-200">
+        <button
+          onClick={() => handleNavigate('land')}
+          className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-all text-left group"
+          title="View and manage land parcels"
+        >
           <div className="flex items-center justify-between mb-4">
-            <div className="p-3 bg-green-50 rounded-lg">
+            <div className="p-3 bg-green-50 rounded-lg group-hover:bg-green-100 transition">
               <MapPin className="w-6 h-6 text-green-600" />
             </div>
+            <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-green-600 transition" />
           </div>
           <p className="text-sm text-gray-600 mb-1">Total Land</p>
           <p className="text-3xl font-bold text-gray-800">{stats.totalLand.toFixed(1)}</p>
           <p className="text-xs text-gray-500 mt-1">acres</p>
-        </div>
+        </button>
 
-        <div className="bg-white rounded-xl p-6 border border-gray-200">
+        <button
+          onClick={() => handleNavigate('crops')}
+          className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-all text-left group"
+          title="View and manage crops"
+        >
           <div className="flex items-center justify-between mb-4">
-            <div className="p-3 bg-amber-50 rounded-lg">
+            <div className="p-3 bg-amber-50 rounded-lg group-hover:bg-amber-100 transition">
               <Wheat className="w-6 h-6 text-amber-600" />
             </div>
+            <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-amber-600 transition" />
           </div>
           <p className="text-sm text-gray-600 mb-1">Active Crops</p>
           <p className="text-3xl font-bold text-gray-800">{stats.activeCrops}</p>
           <p className="text-xs text-gray-500 mt-1">in cultivation</p>
-        </div>
+        </button>
 
-        <div className="bg-white rounded-xl p-6 border border-gray-200">
+        <button
+          onClick={() => handleNavigate('crops')}
+          className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-all text-left group"
+          title="View upcoming harvests"
+        >
           <div className="flex items-center justify-between mb-4">
-            <div className="p-3 bg-blue-50 rounded-lg">
+            <div className="p-3 bg-blue-50 rounded-lg group-hover:bg-blue-100 transition">
               <Calendar className="w-6 h-6 text-blue-600" />
             </div>
+            <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition" />
           </div>
           <p className="text-sm text-gray-600 mb-1">Upcoming Harvests</p>
           <p className="text-3xl font-bold text-gray-800">{stats.upcomingHarvests}</p>
           <p className="text-xs text-gray-500 mt-1">in 30 days</p>
-        </div>
+        </button>
 
-        <div className="bg-white rounded-xl p-6 border border-gray-200">
+        <button
+          onClick={() => handleNavigate('notifications')}
+          className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-all text-left group"
+          title="View all alerts and notifications"
+        >
           <div className="flex items-center justify-between mb-4">
-            <div className="p-3 bg-red-50 rounded-lg">
+            <div className="p-3 bg-red-50 rounded-lg group-hover:bg-red-100 transition">
               <AlertCircle className="w-6 h-6 text-red-600" />
             </div>
+            <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-red-600 transition" />
           </div>
           <p className="text-sm text-gray-600 mb-1">Alerts</p>
           <p className="text-3xl font-bold text-gray-800">
@@ -202,16 +231,22 @@ export const Dashboard = () => {
           <p className="text-xs text-gray-500 mt-1">
             {stats.lowStockItems} low stock, {stats.maintenanceDue} maintenance
           </p>
-        </div>
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-1">
-          <WeatherWidget location={profile?.location || 'New York'} />
-        </div>
-
-        <div className="lg:col-span-2 bg-white rounded-xl p-6 border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Financial Overview</h3>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-white rounded-xl p-6 border border-gray-200">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-800">Financial Overview</h3>
+            <button
+              onClick={() => handleNavigate('finance')}
+              className="text-sm text-green-600 hover:text-green-700 transition flex items-center gap-1"
+              title="View detailed financial records"
+            >
+              <span>View All</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
           <div className="space-y-4">
             <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
               <div className="flex items-center gap-3">
@@ -266,7 +301,17 @@ export const Dashboard = () => {
         </div>
 
         <div className="bg-white rounded-xl p-6 border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Recent Activity</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-800">Recent Activity</h3>
+            <button
+              onClick={() => handleNavigate('notifications')}
+              className="text-sm text-green-600 hover:text-green-700 transition flex items-center gap-1"
+              title="View all notifications"
+            >
+              <span>View All</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
           <div className="space-y-3">
             {recentActivity.length > 0 ? (
               recentActivity.map((activity) => (
@@ -288,34 +333,58 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      {profile?.location && (
-        <LocationMap location={profile.location} />
-      )}
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-6 text-white">
-          <Package className="w-8 h-8 mb-3 opacity-80" />
+        <button
+          onClick={() => handleNavigate('inventory')}
+          className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-6 text-white hover:shadow-lg transition-all text-left group"
+          title="Manage inventory and supplies"
+        >
+          <Package className="w-8 h-8 mb-3 opacity-80 group-hover:opacity-100 transition" />
           <p className="text-sm opacity-90 mb-1">Inventory Items</p>
-          <p className="text-3xl font-bold">Track supplies</p>
-        </div>
+          <div className="flex items-center justify-between">
+            <p className="text-2xl font-bold">Track supplies</p>
+            <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition" />
+          </div>
+        </button>
 
-        <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl p-6 text-white">
-          <Wrench className="w-8 h-8 mb-3 opacity-80" />
+        <button
+          onClick={() => handleNavigate('tools')}
+          className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl p-6 text-white hover:shadow-lg transition-all text-left group"
+          title="Manage tools and equipment"
+        >
+          <Wrench className="w-8 h-8 mb-3 opacity-80 group-hover:opacity-100 transition" />
           <p className="text-sm opacity-90 mb-1">Equipment</p>
-          <p className="text-3xl font-bold">Manage tools</p>
-        </div>
+          <div className="flex items-center justify-between">
+            <p className="text-2xl font-bold">Manage tools</p>
+            <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition" />
+          </div>
+        </button>
 
-        <div className="bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl p-6 text-white">
-          <Wheat className="w-8 h-8 mb-3 opacity-80" />
+        <button
+          onClick={() => handleNavigate('crops')}
+          className="bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl p-6 text-white hover:shadow-lg transition-all text-left group"
+          title="Monitor crop health and growth"
+        >
+          <Wheat className="w-8 h-8 mb-3 opacity-80 group-hover:opacity-100 transition" />
           <p className="text-sm opacity-90 mb-1">Crop Health</p>
-          <p className="text-3xl font-bold">Monitor growth</p>
-        </div>
+          <div className="flex items-center justify-between">
+            <p className="text-2xl font-bold">Monitor growth</p>
+            <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition" />
+          </div>
+        </button>
 
-        <div className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl p-6 text-white">
-          <MapPin className="w-8 h-8 mb-3 opacity-80" />
+        <button
+          onClick={() => handleNavigate('land')}
+          className="bg-gradient-to-br from-teal-500 to-emerald-600 rounded-xl p-6 text-white hover:shadow-lg transition-all text-left group"
+          title="Organize and manage land parcels"
+        >
+          <MapPin className="w-8 h-8 mb-3 opacity-80 group-hover:opacity-100 transition" />
           <p className="text-sm opacity-90 mb-1">Land Parcels</p>
-          <p className="text-3xl font-bold">Organize land</p>
-        </div>
+          <div className="flex items-center justify-between">
+            <p className="text-2xl font-bold">Organize land</p>
+            <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition" />
+          </div>
+        </button>
       </div>
     </div>
   );
