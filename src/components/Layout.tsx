@@ -51,20 +51,20 @@ export const Layout = ({ children, currentPage, onNavigate }: LayoutProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-200 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transform transition-transform duration-200 lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         <div className="flex flex-col h-full">
-          <div className="flex items-center gap-3 px-6 py-5 border-b border-gray-200">
+          <div className="flex items-center gap-3 px-6 py-5 border-b border-gray-200 dark:border-gray-700">
             <div className="bg-green-600 p-2 rounded-lg">
               <Sprout className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-800">AgriManage</h1>
-              <p className="text-xs text-gray-500">{profile?.farm_name || 'Your Farm'}</p>
+              <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">AgriManage</h1>
+              <p className="text-xs text-gray-500 dark:text-gray-400">{profile?.farm_name || 'Your Farm'}</p>
             </div>
           </div>
 
@@ -81,8 +81,8 @@ export const Layout = ({ children, currentPage, onNavigate }: LayoutProps) => {
                   }}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
                     isActive
-                      ? 'bg-green-50 text-green-700'
-                      : 'text-gray-700 hover:bg-gray-50'
+                      ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                   }`}
                 >
                   <Icon className="w-5 h-5" />
@@ -92,42 +92,42 @@ export const Layout = ({ children, currentPage, onNavigate }: LayoutProps) => {
             })}
           </nav>
 
-          <div className="p-3 border-t border-gray-200">
+          <div className="p-3 border-t border-gray-200 dark:border-gray-700">
             <div className="relative">
               <button
                 onClick={() => setProfileOpen(!profileOpen)}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-50 transition"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition"
               >
                 <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
                   <User className="w-5 h-5 text-white" />
                 </div>
                 <div className="flex-1 text-left">
-                  <p className="text-sm font-medium text-gray-800">
+                  <p className="text-sm font-medium text-gray-800 dark:text-gray-100">
                     {profile?.full_name || 'User'}
                   </p>
-                  <p className="text-xs text-gray-500 capitalize">{profile?.role || 'Farmer'}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{profile?.role || 'Farmer'}</p>
                 </div>
               </button>
 
               {profileOpen && (
-                <div className="absolute bottom-full left-3 right-3 mb-2 bg-white border border-gray-200 rounded-lg shadow-lg py-1">
+                <div className="absolute bottom-full left-3 right-3 mb-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1">
                   <button
                     onClick={() => {
                       onNavigate('profile');
                       setProfileOpen(false);
                       setSidebarOpen(false);
                     }}
-                    className="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition text-left"
+                    className="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition text-left"
                   >
-                    <User className="w-4 h-4 text-gray-600" />
-                    <span className="text-sm text-gray-700">Profile Settings</span>
+                    <User className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                    <span className="text-sm text-gray-700 dark:text-gray-300">Profile Settings</span>
                   </button>
                   <button
                     onClick={handleSignOut}
-                    className="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition text-left"
+                    className="w-full flex items-center gap-3 px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition text-left"
                   >
-                    <LogOut className="w-4 h-4 text-gray-600" />
-                    <span className="text-sm text-gray-700">Sign Out</span>
+                    <LogOut className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                    <span className="text-sm text-gray-700 dark:text-gray-300">Sign Out</span>
                   </button>
                 </div>
               )}
@@ -137,40 +137,40 @@ export const Layout = ({ children, currentPage, onNavigate }: LayoutProps) => {
       </aside>
 
       <div className="lg:pl-64 lg:pr-80">
-        <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
+        <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40">
           <div className="flex items-center justify-between px-4 py-4">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition"
+              className="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition"
             >
               {sidebarOpen ? (
-                <X className="w-6 h-6 text-gray-600" />
+                <X className="w-6 h-6 text-gray-600 dark:text-gray-300" />
               ) : (
-                <Menu className="w-6 h-6 text-gray-600" />
+                <Menu className="w-6 h-6 text-gray-600 dark:text-gray-300" />
               )}
             </button>
 
-            <h2 className="text-xl font-semibold text-gray-800 capitalize lg:block hidden">
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 capitalize lg:block hidden">
               {currentPage}
             </h2>
 
             <div className="flex items-center gap-2">
               <button
                 onClick={() => onNavigate('notifications')}
-                className="p-2 hover:bg-gray-100 rounded-lg transition relative"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition relative"
                 title="View notifications"
               >
-                <Bell className="w-5 h-5 text-gray-600" />
+                <Bell className="w-5 h-5 text-gray-600 dark:text-gray-300" />
               </button>
               <button
                 onClick={() => setRightSidebarOpen(!rightSidebarOpen)}
-                className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition"
+                className="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition"
                 title="Toggle weather and map"
               >
                 {rightSidebarOpen ? (
-                  <ChevronRight className="w-6 h-6 text-gray-600" />
+                  <ChevronRight className="w-6 h-6 text-gray-600 dark:text-gray-300" />
                 ) : (
-                  <ChevronLeft className="w-6 h-6 text-gray-600" />
+                  <ChevronLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
                 )}
               </button>
             </div>
@@ -181,19 +181,19 @@ export const Layout = ({ children, currentPage, onNavigate }: LayoutProps) => {
       </div>
 
       <aside
-        className={`fixed inset-y-0 right-0 z-30 w-80 bg-white border-l border-gray-200 transform transition-transform duration-200 lg:translate-x-0 overflow-y-auto ${
+        className={`fixed inset-y-0 right-0 z-30 w-80 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 transform transition-transform duration-200 lg:translate-x-0 overflow-y-auto ${
           rightSidebarOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         <div className="p-4 space-y-4">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-semibold text-gray-800">Location & Weather</h3>
+            <h3 className="font-semibold text-gray-800 dark:text-gray-100">Location & Weather</h3>
             <button
               onClick={() => setRightSidebarOpen(false)}
-              className="lg:hidden p-1 hover:bg-gray-100 rounded"
+              className="lg:hidden p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
               title="Close sidebar"
             >
-              <X className="w-5 h-5 text-gray-500" />
+              <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
             </button>
           </div>
 
