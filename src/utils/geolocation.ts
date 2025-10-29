@@ -68,8 +68,11 @@ export const getLocationString = (locationData: LocationData): string => {
   }
   return `${locationData.coordinates.latitude.toFixed(4)}, ${locationData.coordinates.longitude.toFixed(4)}`;
 };
+<<<<<<< HEAD
 
 
 
 
 
+=======
+>>>>>>> 61b4a3804ac373c203cf3cfe960c6409d9a992fe
