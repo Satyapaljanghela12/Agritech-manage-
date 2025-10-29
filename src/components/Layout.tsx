@@ -1,5 +1,6 @@
 import { ReactNode, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { AIChatbot } from './AIChatbot';
 import {
   LayoutDashboard,
   MapPin,
@@ -168,6 +169,8 @@ export const Layout = ({ children, currentPage, onNavigate }: LayoutProps) => {
           onClick={() => setSidebarOpen(false)}
         />
       )}
+
+      <AIChatbot />
     </div>
   );
 };

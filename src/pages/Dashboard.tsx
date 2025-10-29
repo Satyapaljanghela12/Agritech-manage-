@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import { WeatherWidget } from '../components/WeatherWidget';
+import { LocationMap } from '../components/LocationMap';
 import {
   MapPin,
   Wheat,
@@ -24,7 +26,7 @@ interface DashboardStats {
 }
 
 export const Dashboard = () => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [stats, setStats] = useState<DashboardStats>({
     totalLand: 0,
     activeCrops: 0,
@@ -204,6 +206,10 @@ export const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-1">
+          <WeatherWidget location={profile?.location || 'New York'} />
+        </div>
+
         <div className="lg:col-span-2 bg-white rounded-xl p-6 border border-gray-200">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Financial Overview</h3>
           <div className="space-y-4">
@@ -281,6 +287,10 @@ export const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {profile?.location && (
+        <LocationMap location={profile.location} />
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-6 text-white">
