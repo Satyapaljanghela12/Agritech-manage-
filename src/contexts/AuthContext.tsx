@@ -75,18 +75,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       password,
     });
 
-    if (error) throw error;
+    if (error) {
+      if (error.message.includes('rate_limit')) {
+        throw new Error('Too many signup attempts. Please wait a moment and try again.');
+      }
+      throw error;
+    }
 
     if (data.user) {
-      const { error: profileError } = await supabase
-        .from('users_profiles')
-        .insert({
-          id: data.user.id,
-          full_name: fullName,
-          role: 'farmer',
-        });
+      if (data.session) {
+        const { error: profileError } = await supabase
+          .from('users_profiles')
+          .insert({
+            id: data.user.id,
+            full_name: fullName,
+            role: 'farmer',
+          });
 
-      if (profileError) throw profileError;
+        if (profileError) throw profileError;
+      } else {
+        throw new Error('Please check your email to confirm your account before signing in.');
+      }
     }
   };
 
@@ -96,7 +105,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       password,
     });
 
-    if (error) throw error;
+    if (error) {
+      if (error.message.includes('Email not confirmed')) {
+        throw new Error('Please check your email and confirm your account before signing in.');
+      }
+      if (error.message.includes('Invalid login credentials')) {
+        throw new Error('Invalid email or password.');
+      }
+      throw error;
+    }
   };
 
   const signOut = async () => {
