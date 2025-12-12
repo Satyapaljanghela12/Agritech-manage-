@@ -81,7 +81,7 @@ export const WeatherWidget = ({ location, useGeolocation = true }: WeatherWidget
 
   const fetchWeather = async (loc: string) => {
     try {
-      const apiKey = 'bd5e9d45dbfd4c539f014746252910';
+      const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
       const response = await fetch(
         `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${encodeURIComponent(
           loc
