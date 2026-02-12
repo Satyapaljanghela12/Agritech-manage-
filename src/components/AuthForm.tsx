@@ -42,7 +42,7 @@ export const AuthForm = () => {
         </div>
 
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">
-          AgriManage
+          Farmagrid
         </h1>
         <p className="text-center text-gray-600 mb-8">
           {isSignUp ? 'Create your account' : 'Welcome back'}
