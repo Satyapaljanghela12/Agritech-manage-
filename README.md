@@ -1,4 +1,4 @@
-# AgriManage - Comprehensive Agriculture Management Platform
+# Farmagrid - Comprehensive Agriculture Management Platform
 
 A modern, full-featured web application for managing farm operations, built with React, TypeScript, Tailwind CSS, and Supabase.
 
