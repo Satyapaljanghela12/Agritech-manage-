@@ -63,7 +63,7 @@ export const Layout = ({ children, currentPage, onNavigate }: LayoutProps) => {
               <Sprout className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">AgriManage</h1>
+              <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">Farmagrid</h1>
               <p className="text-xs text-gray-500 dark:text-gray-400">{profile?.farm_name || 'Your Farm'}</p>
             </div>
           </div>
