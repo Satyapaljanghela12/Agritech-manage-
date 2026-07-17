@@ -59,7 +59,7 @@ export const AboutSection = () => {
             </div>
 
             <a
-              href="/register"
+              href="/register" onClick={(e)=>{e.preventDefault();window.history.pushState({},"","/register");window.dispatchEvent(new PopStateEvent("popstate"))}}
               className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold px-7 py-3.5 rounded-xl transition-colors"
             >
               Start For Free <ArrowRight className="w-4 h-4" />
@@ -70,3 +70,4 @@ export const AboutSection = () => {
     </section>
   );
 };
+

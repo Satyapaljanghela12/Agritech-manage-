@@ -12,13 +12,13 @@ export const CTABanner = () => {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
-            href="/register"
+            href="/register" onClick={(e)=>{e.preventDefault();window.history.pushState({},"","/register");window.dispatchEvent(new PopStateEvent("popstate"))}}
             className="inline-flex items-center justify-center gap-2 bg-white text-green-700 font-bold px-8 py-4 rounded-xl hover:bg-green-50 transition-colors"
           >
             Get Started Free <ArrowRight className="w-4 h-4" />
           </a>
           <a
-            href="/login"
+            href="/login" onClick={(e)=>{e.preventDefault();window.history.pushState({},"","/login");window.dispatchEvent(new PopStateEvent("popstate"))}}
             className="inline-flex items-center justify-center gap-2 border-2 border-white text-white font-bold px-8 py-4 rounded-xl hover:bg-white/10 transition-colors"
           >
             Sign In
@@ -28,3 +28,4 @@ export const CTABanner = () => {
     </section>
   );
 };
+

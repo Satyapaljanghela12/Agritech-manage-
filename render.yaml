@@ -40,6 +40,10 @@ services:
         sync: false
       - key: VITE_GROQ_API_KEY
         sync: false
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
     routes:
       - type: rewrite
         source: /*

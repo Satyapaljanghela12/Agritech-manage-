@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 
-export const Navbar = () => {
+interface NavbarProps {
+  onNavigate?: (path: string) => (e: React.MouseEvent) => void;
+}
+
+export const Navbar = ({ onNavigate }: NavbarProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -50,7 +54,7 @@ export const Navbar = () => {
 
           <div className="hidden md:flex items-center gap-3">
             <a
-              href="/login"
+              href="/login" onClick={(e)=>{e.preventDefault();window.history.pushState({},"","/login");window.dispatchEvent(new PopStateEvent("popstate"))}}
               className={`px-5 py-2 text-sm font-semibold rounded-xl transition-colors ${
                 isScrolled ? 'text-gray-700 hover:text-green-600' : 'text-white hover:text-green-300'
               }`}
@@ -58,7 +62,7 @@ export const Navbar = () => {
               Sign In
             </a>
             <a
-              href="/register"
+              href="/register" onClick={(e)=>{e.preventDefault();window.history.pushState({},"","/register");window.dispatchEvent(new PopStateEvent("popstate"))}}
               className="px-5 py-2 bg-green-600 text-white text-sm font-semibold rounded-xl hover:bg-green-700 transition-colors"
             >
               Get Started →
@@ -91,8 +95,8 @@ export const Navbar = () => {
               </a>
             ))}
             <div className="pt-3 border-t space-y-2">
-              <a href="/login" className="block px-4 py-2 text-center text-gray-700 font-semibold">Sign In</a>
-              <a href="/register" className="block px-4 py-2 text-center bg-green-600 text-white rounded-lg font-semibold">Get Started</a>
+              <a href="/login" onClick={(e)=>{e.preventDefault();window.history.pushState({},"","/login");window.dispatchEvent(new PopStateEvent("popstate"))}} className="block px-4 py-2 text-center text-gray-700 font-semibold">Sign In</a>
+              <a href="/register" onClick={(e)=>{e.preventDefault();window.history.pushState({},"","/register");window.dispatchEvent(new PopStateEvent("popstate"))}} className="block px-4 py-2 text-center bg-green-600 text-white rounded-lg font-semibold">Get Started</a>
             </div>
           </div>
         </div>
@@ -100,3 +104,4 @@ export const Navbar = () => {
     </nav>
   );
 };
+

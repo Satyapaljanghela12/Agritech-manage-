@@ -30,7 +30,7 @@ export const HeroSection = () => {
 
             <div className="flex flex-col sm:flex-row gap-4 mb-10">
               <a
-                href="/register"
+                href="/register" onClick={(e)=>{e.preventDefault();window.history.pushState({},"","/register");window.dispatchEvent(new PopStateEvent("popstate"))}}
                 className="inline-flex items-center justify-center gap-2 bg-green-500 hover:bg-green-400 text-white font-semibold px-7 py-3.5 rounded-xl transition-colors"
               >
                 Get Started Free <ArrowRight className="w-4 h-4" />
@@ -64,3 +64,4 @@ export const HeroSection = () => {
     </section>
   );
 };
+

@@ -124,7 +124,7 @@ export const ServicesStrip = () => {
         {/* Bottom CTA */}
         <div className="mt-14 text-center">
           <a
-            href="/register"
+            href="/register" onClick={(e)=>{e.preventDefault();window.history.pushState({},"","/register");window.dispatchEvent(new PopStateEvent("popstate"))}}
             className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-4 rounded-xl transition-colors shadow-lg shadow-green-600/20"
           >
             Get Started Free →
@@ -134,3 +134,4 @@ export const ServicesStrip = () => {
     </section>
   );
 };
+

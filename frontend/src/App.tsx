@@ -20,15 +20,20 @@ function AppContent() {
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [showLanding, setShowLanding] = useState(true);
 
-  // Handle OAuth callback
   useEffect(() => {
-    if (window.location.pathname === '/auth/callback') {
-      return;
-    }
-    // Check if user wants to see the app
-    if (window.location.pathname === '/app' || window.location.pathname === '/login' || window.location.pathname === '/register') {
-      setShowLanding(false);
-    }
+    const handleRouteChange = () => {
+      const path = window.location.pathname;
+      if (path === '/auth/callback') return;
+      if (path === '/app' || path === '/login' || path === '/register') {
+        setShowLanding(false);
+      } else if (path === '/') {
+        setShowLanding(true);
+      }
+    };
+
+    handleRouteChange();
+    window.addEventListener('popstate', handleRouteChange);
+    return () => window.removeEventListener('popstate', handleRouteChange);
   }, []);
 
   if (window.location.pathname === '/auth/callback') {
