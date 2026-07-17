@@ -142,10 +142,6 @@ export const InventoryManagement = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Inventory Management</h1>
-          <p className="text-gray-600 mt-1">{items.length} items tracked</p>
-        </div>
         <button
           onClick={() => {
             setShowForm(true);
@@ -433,7 +429,7 @@ export const InventoryManagement = () => {
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600">Cost/Unit</span>
                     <span className="font-semibold text-gray-800">
-                      ${item.costPerUnit.toFixed(2)}
+                      ₹{item.costPerUnit.toFixed(2)}
                     </span>
                   </div>
                 )}

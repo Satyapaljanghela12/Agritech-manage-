@@ -135,10 +135,6 @@ export const FinancialTracking = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Financial Tracking</h1>
-          <p className="text-gray-600 mt-1">{records.length} transactions recorded</p>
-        </div>
         <button
           onClick={() => {
             setShowForm(true);
@@ -160,7 +156,7 @@ export const FinancialTracking = () => {
             </div>
             <p className="text-sm text-gray-600">Total Revenue</p>
           </div>
-          <p className="text-3xl font-bold text-gray-800">${totalRevenue.toFixed(2)}</p>
+          <p className="text-3xl font-bold text-gray-800">₹{totalRevenue.toFixed(2)}</p>
         </div>
 
         <div className="bg-white rounded-xl p-6 border border-gray-200">
@@ -170,7 +166,7 @@ export const FinancialTracking = () => {
             </div>
             <p className="text-sm text-gray-600">Total Expenses</p>
           </div>
-          <p className="text-3xl font-bold text-gray-800">${totalExpenses.toFixed(2)}</p>
+          <p className="text-3xl font-bold text-gray-800">₹{totalExpenses.toFixed(2)}</p>
         </div>
 
         <div
@@ -205,7 +201,7 @@ export const FinancialTracking = () => {
               netProfit >= 0 ? 'text-emerald-700' : 'text-orange-700'
             }`}
           >
-            ${Math.abs(netProfit).toFixed(2)}
+            ₹{Math.abs(netProfit).toFixed(2)}
           </p>
         </div>
       </div>
@@ -400,7 +396,7 @@ export const FinancialTracking = () => {
                       record.type === 'revenue' ? 'text-green-600' : 'text-red-600'
                     }`}
                   >
-                    {record.type === 'revenue' ? '+' : '-'}${Number(record.amount).toFixed(2)}
+                    {record.type === 'revenue' ? '+' : '-'}₹{Number(record.amount).toFixed(2)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
                     <div className="flex gap-2 justify-end">

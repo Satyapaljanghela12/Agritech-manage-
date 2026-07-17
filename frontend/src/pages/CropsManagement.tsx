@@ -141,12 +141,6 @@ export const CropsManagement = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Crops Management</h1>
-          <p className="text-gray-600 mt-1">
-            {totalAreaCultivated.toFixed(1)} acres under cultivation
-          </p>
-        </div>
         <button
           onClick={() => {
             setShowForm(true);

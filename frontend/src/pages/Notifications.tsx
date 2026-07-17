@@ -96,12 +96,6 @@ export const Notifications = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Notifications</h1>
-          <p className="text-gray-600 mt-1">
-            {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
-          </p>
-        </div>
         {unreadCount > 0 && (
           <button
             onClick={markAllAsRead}

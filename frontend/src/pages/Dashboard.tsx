@@ -132,11 +132,6 @@ export const Dashboard = ({ onNavigate }: DashboardProps = {}) => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Dashboard</h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-1">Overview of your farm operations</p>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <button
           onClick={() => handleNavigate('land')}
@@ -227,7 +222,7 @@ export const Dashboard = ({ onNavigate }: DashboardProps = {}) => {
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">Total Revenue</p>
                   <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-                    ${stats.totalRevenue.toFixed(2)}
+                    ₹{stats.totalRevenue.toFixed(2)}
                   </p>
                 </div>
               </div>
@@ -239,7 +234,7 @@ export const Dashboard = ({ onNavigate }: DashboardProps = {}) => {
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">Total Expenses</p>
                   <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-                    ${stats.totalExpenses.toFixed(2)}
+                    ₹{stats.totalExpenses.toFixed(2)}
                   </p>
                 </div>
               </div>
@@ -257,7 +252,7 @@ export const Dashboard = ({ onNavigate }: DashboardProps = {}) => {
                     stats.profitLoss >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-orange-600 dark:text-orange-400'
                   }`}
                 >
-                  ${Math.abs(stats.profitLoss).toFixed(2)}
+                  ₹{Math.abs(stats.profitLoss).toFixed(2)}
                 </p>
               </div>
               <div

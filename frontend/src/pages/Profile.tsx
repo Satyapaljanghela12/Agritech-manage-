@@ -43,11 +43,6 @@ export const Profile = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Profile & Settings</h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-1">Manage your account and preferences</p>
-      </div>
-
       <div className="bg-white dark:bg-gray-800 rounded-xl p-8 border border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-4 mb-6">
           <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center">

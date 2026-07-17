@@ -93,7 +93,7 @@ export const DashboardExperience = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.5, duration: 0.8 }}
-            className="absolute -left-4 md:-left-12 top-1/4 z-20 bg-white p-4 rounded-2xl shadow-xl border border-green-50 flex items-center gap-4"
+            className="absolute left-2 md:-left-12 top-1/4 z-20 bg-white p-4 rounded-2xl shadow-xl border border-green-50 flex items-center gap-4"
           >
             <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-green-600">
                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
@@ -109,7 +109,7 @@ export const DashboardExperience = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.7, duration: 0.8 }}
-            className="absolute -right-4 md:-right-12 bottom-1/4 z-20 bg-white p-4 rounded-2xl shadow-xl border border-green-50 flex items-center gap-4"
+            className="absolute right-2 md:-right-12 bottom-1/4 z-20 bg-white p-4 rounded-2xl shadow-xl border border-green-50 flex items-center gap-4"
           >
             <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600">
                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>

@@ -98,12 +98,6 @@ export const LandManagement = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Land Management</h1>
-          <p className="text-gray-600 mt-1">
-            Total: {totalArea.toFixed(1)} acres across {parcels.length} parcels
-          </p>
-        </div>
         <button
           onClick={() => {
             setShowForm(true);

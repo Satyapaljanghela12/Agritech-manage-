@@ -1,5 +1,92 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, Send, X, Minimize2, Maximize2, Loader } from 'lucide-react';
+
+const FormattedMessage = ({ content, isUser }: { content: string; isUser: boolean }) => {
+  const lines = content.split('\n');
+  const elements: React.ReactNode[] = [];
+  let i = 0;
+
+  const renderInline = (text: string, key: string) => {
+    // Replace **bold** with <strong>
+    const parts = text.split(/\*\*(.+?)\*\*/g);
+    return (
+      <span key={key}>
+        {parts.map((part, idx) =>
+          idx % 2 === 1 ? <strong key={idx}>{part}</strong> : part
+        )}
+      </span>
+    );
+  };
+
+  while (i < lines.length) {
+    const line = lines[i].trim();
+
+    if (!line) {
+      i++;
+      continue;
+    }
+
+    // Numbered list item
+    const numberedMatch = line.match(/^(\d+)\.\s+(.*)$/);
+    if (numberedMatch) {
+      const listItems: React.ReactNode[] = [];
+      while (i < lines.length) {
+        const l = lines[i].trim();
+        const m = l.match(/^(\d+)\.\s+(.*)$/);
+        if (m) {
+          listItems.push(<li key={i} className="mb-1">{renderInline(m[2], `li-${i}`)}</li>);
+          i++;
+        } else if (!l) {
+          i++;
+          break;
+        } else {
+          break;
+        }
+      }
+      elements.push(
+        <ol key={`ol-${i}`} className={`list-decimal list-inside space-y-1 my-2 ${isUser ? '' : 'text-gray-800'}`}>
+          {listItems}
+        </ol>
+      );
+      continue;
+    }
+
+    // Bullet list item
+    const bulletMatch = line.match(/^[-•*]\s+(.*)$/);
+    if (bulletMatch) {
+      const listItems: React.ReactNode[] = [];
+      while (i < lines.length) {
+        const l = lines[i].trim();
+        const m = l.match(/^[-•*]\s+(.*)$/);
+        if (m) {
+          listItems.push(<li key={i} className="mb-1">{renderInline(m[1], `li-${i}`)}</li>);
+          i++;
+        } else if (!l) {
+          i++;
+          break;
+        } else {
+          break;
+        }
+      }
+      elements.push(
+        <ul key={`ul-${i}`} className={`list-disc list-inside space-y-1 my-2 ${isUser ? '' : 'text-gray-800'}`}>
+          {listItems}
+        </ul>
+      );
+      continue;
+    }
+
+    // Regular paragraph
+    elements.push(
+      <p key={i} className="mb-2 leading-relaxed">
+        {renderInline(line, `p-${i}`)}
+      </p>
+    );
+    i++;
+  }
+
+  return <div className="space-y-0">{elements}</div>;
+};
 
 interface Message {
   id: string;
@@ -15,8 +102,7 @@ export const AIChatbot = () => {
     {
       id: '1',
       role: 'assistant',
-      content:
-        "Hello! I'm your AgriAssist AI. I can help you with farming questions, crop management, pest control, weather insights, and more. How can I assist you today?",
+      content: "Hello! I'm your AgriAssist AI. I can help you with farming questions, crop management, pest control, weather insights, and more. How can I assist you today?",
       timestamp: new Date(),
     },
   ]);
@@ -24,58 +110,62 @@ export const AIChatbot = () => {
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   const generateResponse = async (userMessage: string): Promise<string> => {
-    const lowerMessage = userMessage.toLowerCase();
-
-    if (lowerMessage.includes('weather') || lowerMessage.includes('rain')) {
-      return "Weather is crucial for farming! I recommend checking the Weather widget on your dashboard for real-time updates. For rain predictions, monitor the forecast regularly and plan your irrigation accordingly. Would you like tips on rain-dependent crops?";
+    const apiKey = import.meta.env.VITE_GROQ_API_KEY;
+    try {
+      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: 'llama-3.3-70b-versatile',
+          messages: [
+            {
+              role: 'system',
+              content: 'You are AgriAssist, an expert AI farming assistant built into FarmGrid. Help farmers with crop management, pest control, soil health, irrigation, weather advice, financial planning, and equipment maintenance. Keep answers practical, concise, and relevant to agriculture. When referencing app features, mention the relevant section (Crops Management, Inventory, Financial Tracking, Tools, Weather, etc.).',
+            },
+            { role: 'user', content: userMessage },
+          ],
+          max_tokens: 500,
+          temperature: 0.7,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        const errMsg = data?.error?.message || 'Unknown error';
+        throw new Error(errMsg);
+      }
+      return data.choices?.[0]?.message?.content ?? "Sorry, I couldn't get a response. Please try again.";
+    } catch (err: any) {
+      throw err;
     }
+  };
 
-    if (lowerMessage.includes('pest') || lowerMessage.includes('insect')) {
-      return "Pest management is vital! Here are some tips:\n\n1. Regular monitoring and early detection\n2. Use integrated pest management (IPM) strategies\n3. Rotate crops to break pest cycles\n4. Maintain healthy soil to strengthen plants\n5. Use natural predators when possible\n\nWhat specific pest are you dealing with?";
-    }
-
-    if (lowerMessage.includes('soil') || lowerMessage.includes('fertilizer')) {
-      return "Soil health is the foundation of good farming! Consider:\n\n1. Test soil pH regularly (ideal: 6.0-7.0 for most crops)\n2. Add organic matter like compost\n3. Use crop rotation to maintain nutrients\n4. Apply fertilizers based on soil test results\n5. Consider cover crops in off-season\n\nWould you like specific fertilizer recommendations?";
-    }
-
-    if (lowerMessage.includes('water') || lowerMessage.includes('irrigation')) {
-      return "Efficient water management saves resources! Tips:\n\n1. Use drip irrigation for water efficiency\n2. Water early morning or evening\n3. Monitor soil moisture levels\n4. Mulch to retain moisture\n5. Collect rainwater when possible\n\nTrack your water usage in the Inventory section!";
-    }
-
-    if (lowerMessage.includes('crop') || lowerMessage.includes('plant')) {
-      return "Crop selection depends on several factors:\n\n1. Local climate and season\n2. Soil type (check your Land Management section)\n3. Water availability\n4. Market demand\n5. Your experience level\n\nUse the Crops Management module to track planting dates and expected harvests. What crop are you interested in?";
-    }
-
-    if (lowerMessage.includes('disease') || lowerMessage.includes('fungus')) {
-      return "Plant diseases need quick action! General advice:\n\n1. Remove infected plants immediately\n2. Improve air circulation\n3. Avoid overhead watering\n4. Use disease-resistant varieties\n5. Apply appropriate fungicides if needed\n\nEarly detection is key. Describe the symptoms you're seeing?";
-    }
-
-    if (lowerMessage.includes('harvest') || lowerMessage.includes('yield')) {
-      return "Maximize your harvest with these tips:\n\n1. Harvest at the right maturity stage\n2. Use proper harvesting techniques\n3. Handle crops carefully to avoid damage\n4. Store in appropriate conditions\n5. Track yields in your Crops Management section\n\nYour dashboard shows upcoming harvests. What crop are you harvesting?";
-    }
-
-    if (lowerMessage.includes('organic') || lowerMessage.includes('chemical-free')) {
-      return "Organic farming is wonderful! Key practices:\n\n1. Use compost and natural fertilizers\n2. Implement crop rotation\n3. Use biological pest control\n4. Avoid synthetic chemicals\n5. Maintain soil health naturally\n\nTrack your organic inputs in the Inventory section. Need specific organic solutions?";
-    }
-
-    if (lowerMessage.includes('profit') || lowerMessage.includes('money') || lowerMessage.includes('finance')) {
-      return "Financial management is crucial! Use your Financial Tracking module to:\n\n1. Record all expenses and revenue\n2. Track profit margins per crop\n3. Identify cost-saving opportunities\n4. Plan budgets for next season\n5. Monitor ROI on equipment\n\nWould you like tips on reducing costs or increasing revenue?";
-    }
-
-    if (lowerMessage.includes('equipment') || lowerMessage.includes('machinery') || lowerMessage.includes('tool')) {
-      return "Proper equipment maintenance saves money! Remember to:\n\n1. Follow regular maintenance schedules\n2. Store equipment properly\n3. Clean after each use\n4. Check for wear and damage\n5. Track maintenance in Tools Management\n\nYour dashboard alerts you when maintenance is due. What equipment do you need help with?";
-    }
-
-    return "That's a great question! As your farming assistant, I can help with:\n\n• Crop selection and planning\n• Pest and disease management\n• Soil health and fertilization\n• Irrigation and water management\n• Weather-related advice\n• Organic farming practices\n• Financial planning\n• Equipment maintenance\n\nPlease ask me anything specific about your farm operations!";
+  const getFallbackResponse = (userMessage: string): string => {
+    const msg = userMessage.toLowerCase();
+    if (msg.includes('weather') || msg.includes('rain'))
+      return "Weather is crucial for farming! Check the Weather section on your dashboard for real-time updates and forecasts.";
+    if (msg.includes('pest') || msg.includes('insect'))
+      return "For pest management:\n\n1. Inspect crops regularly for early detection\n2. Use integrated pest management (IPM)\n3. Rotate crops to break pest cycles\n4. Introduce natural predators when possible";
+    if (msg.includes('soil') || msg.includes('fertilizer'))
+      return "For healthy soil:\n\n1. Test pH regularly (ideal: 6.0–7.0)\n2. Add compost and organic matter\n3. Rotate crops to replenish nutrients\n4. Apply fertilizers based on soil test results";
+    if (msg.includes('water') || msg.includes('irrigation'))
+      return "Water management tips:\n\n1. Use drip irrigation for efficiency\n2. Water early morning or late evening\n3. Monitor soil moisture before watering\n4. Mulch to retain moisture";
+    if (msg.includes('crop') || msg.includes('plant') || msg.includes('harvest'))
+      return "Track all your crops in the Crops Management section. Log planting dates, expected harvest dates, and growth status.";
+    if (msg.includes('financ') || msg.includes('profit') || msg.includes('money') || msg.includes('expense'))
+      return "Use the Financial Tracking section to record income and expenses, view your net profit/loss, and plan budgets.";
+    if (msg.includes('equipment') || msg.includes('tool') || msg.includes('machine'))
+      return "Manage all equipment in the Tools section — track condition, schedule maintenance, and get alerts when service is due.";
+    if (msg.includes('inventory') || msg.includes('stock') || msg.includes('seed'))
+      return "The Inventory section helps you track seeds, fertilizers, and supplies. Set alert levels so you get notified before running out.";
+    return "I can help you with:\n\n• Crop planning and management\n• Pest and disease control\n• Soil health and fertilization\n• Irrigation and water management\n• Financial tracking\n• Equipment maintenance\n• Weather-based advice\n\nWhat would you like to know?";
   };
 
   const handleSend = async () => {
@@ -92,17 +182,25 @@ export const AIChatbot = () => {
     setInput('');
     setLoading(true);
 
-    setTimeout(async () => {
+    try {
       const responseText = await generateResponse(userMessage.content);
-      const assistantMessage: Message = {
+      setMessages((prev) => [...prev, {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: responseText,
         timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, assistantMessage]);
+      }]);
+    } catch {
+      // Silently fall back to keyword responses
+      setMessages((prev) => [...prev, {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: getFallbackResponse(userMessage.content),
+        timestamp: new Date(),
+      }]);
+    } finally {
       setLoading(false);
-    }, 800);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -124,13 +222,9 @@ export const AIChatbot = () => {
   }
 
   return (
-    <div
-      className={`fixed right-6 bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col z-50 transition-all ${
-        isMinimized
-          ? 'bottom-6 w-80'
-          : 'bottom-6 w-96 h-[600px]'
-      }`}
-    >
+    <div className={`fixed right-6 bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col z-50 transition-all ${
+      isMinimized ? 'bottom-6 w-80' : 'bottom-6 w-96 h-[600px]'
+    }`}>
       <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-4 rounded-t-2xl flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="bg-white bg-opacity-20 p-2 rounded-full">
@@ -142,20 +236,10 @@ export const AIChatbot = () => {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => setIsMinimized(!isMinimized)}
-            className="hover:bg-white hover:bg-opacity-20 p-1 rounded transition"
-          >
-            {isMinimized ? (
-              <Maximize2 className="w-4 h-4" />
-            ) : (
-              <Minimize2 className="w-4 h-4" />
-            )}
+          <button onClick={() => setIsMinimized(!isMinimized)} className="hover:bg-white hover:bg-opacity-20 p-1 rounded transition">
+            {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
           </button>
-          <button
-            onClick={() => setIsOpen(false)}
-            className="hover:bg-white hover:bg-opacity-20 p-1 rounded transition"
-          >
+          <button onClick={() => setIsOpen(false)} className="hover:bg-white hover:bg-opacity-20 p-1 rounded transition">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -165,27 +249,15 @@ export const AIChatbot = () => {
         <>
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div
-                  className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-                    message.role === 'user'
-                      ? 'bg-green-600 text-white'
-                      : 'bg-gray-100 text-gray-800'
-                  }`}
-                >
-                  <p className="text-sm whitespace-pre-line">{message.content}</p>
-                  <p
-                    className={`text-xs mt-1 ${
-                      message.role === 'user' ? 'text-green-100' : 'text-gray-500'
-                    }`}
-                  >
-                    {message.timestamp.toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
+              <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+                  message.role === 'user' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-800'
+                }`}>
+                  <div className="text-sm">
+                    <FormattedMessage content={message.content} isUser={message.role === 'user'} />
+                  </div>
+                  <p className={`text-xs mt-1 ${message.role === 'user' ? 'text-green-100' : 'text-gray-500'}`}>
+                    {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
               </div>

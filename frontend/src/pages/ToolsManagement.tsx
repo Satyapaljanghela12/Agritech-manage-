@@ -136,10 +136,6 @@ export const ToolsManagement = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Tools & Equipment</h1>
-          <p className="text-gray-600 mt-1">{tools.length} items tracked</p>
-        </div>
         <button
           onClick={() => {
             setShowForm(true);
@@ -376,7 +372,7 @@ export const ToolsManagement = () => {
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600">Purchase Cost</span>
                     <span className="font-semibold text-gray-800">
-                      ${tool.purchaseCost.toFixed(2)}
+                      ₹{tool.purchaseCost.toFixed(2)}
                     </span>
                   </div>
                 )}

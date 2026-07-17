@@ -1,238 +1,158 @@
-import * as React from 'react';
-import { motion } from 'framer-motion';
-import { UserPlus, Wheat, Package, BarChart3, ArrowRight, CheckCircle2 } from 'lucide-react';
-import { cn } from '../../lib/utils';
+import { UserPlus, Settings, BarChart3, TrendingUp, LucideIcon } from 'lucide-react';
 
-interface StepCardProps {
-  icon: React.ElementType;
+interface Step {
+  number: string;
+  icon: LucideIcon;
   title: string;
-  description: string;
-  step: string;
-  index: number;
-  isLast: boolean;
+  desc: string;
+  tag: string;
+  accent: string;
+  img?: string;
 }
 
-const StepCard: React.FC<StepCardProps> = ({ icon: Icon, title, description, step, index, isLast }) => {
-  return (
-    <div className="relative">
-      {/* Connector Line */}
-      {!isLast && (
-        <motion.div
-          initial={{ scaleX: 0 }}
-          whileInView={{ scaleX: 1 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.8, delay: index * 0.2 + 0.4 }}
-          className="hidden lg:block absolute top-20 left-[60%] w-[80%] h-1 bg-gradient-to-r from-green-400 via-green-300 to-green-200 z-0 origin-left"
-        >
-          <motion.div
-            animate={{ x: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute right-0 top-1/2 -translate-y-1/2"
-          >
-            <ArrowRight className="w-5 h-5 text-green-500" />
-          </motion.div>
-        </motion.div>
-      )}
-
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.6, delay: index * 0.2 }}
-        className="relative z-10"
-      >
-        {/* Step Number Badge */}
-        <motion.div
-          initial={{ scale: 0 }}
-          whileInView={{ scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: index * 0.2 + 0.2, type: "spring", stiffness: 200 }}
-          className="absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg z-20"
-        >
-          <span className="text-white font-bold text-lg" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
-            {step}
-          </span>
-        </motion.div>
-
-        {/* Card */}
-        <motion.div
-          whileHover={{ y: -8, transition: { duration: 0.3 } }}
-          className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border-2 border-gray-100 hover:border-green-300 overflow-hidden"
-        >
-          {/* Background gradient on hover */}
-          <div className="absolute inset-0 bg-gradient-to-br from-green-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-          {/* Content */}
-          <div className="relative z-10">
-            {/* Icon */}
-            <motion.div
-              whileHover={{ rotate: [0, -10, 10, -10, 0], scale: 1.1 }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl mb-6 shadow-md group-hover:shadow-xl transition-all duration-300"
-            >
-              <Icon className="w-10 h-10 text-white" />
-            </motion.div>
-
-            {/* Title */}
-            <h3
-              className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors duration-300"
-              style={{ fontFamily: 'Poppins, sans-serif' }}
-            >
-              {title}
-            </h3>
-
-            {/* Description */}
-            <p
-              className="text-gray-600 leading-relaxed mb-6"
-              style={{ fontFamily: 'Inter, sans-serif' }}
-            >
-              {description}
-            </p>
-
-            {/* Check icon */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: index * 0.2 + 0.5 }}
-              className="inline-flex items-center gap-2 text-green-600 font-semibold text-sm"
-            >
-              <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center group-hover:bg-green-500 transition-colors duration-300">
-                <CheckCircle2 className="w-4 h-4 text-green-600 group-hover:text-white transition-colors duration-300" />
-              </div>
-              <span>Complete</span>
-            </motion.div>
-          </div>
-
-          {/* Decorative corner */}
-          <div className="absolute bottom-0 right-0 w-24 h-24 bg-gradient-to-tl from-green-500/5 to-transparent rounded-tl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        </motion.div>
-      </motion.div>
-    </div>
-  );
-};
+const steps: Step[] = [
+  {
+    number: '01',
+    icon: UserPlus,
+    title: 'Create Your Account',
+    desc: 'Sign up free in minutes. Add your farm name, location and basic details.',
+    tag: 'Free forever',
+    accent: '#16a34a',
+    img: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=800&q=80',
+  },
+  {
+    number: '02',
+    icon: Settings,
+    title: 'Set Up Your Farm',
+    desc: 'Add land parcels, crops, inventory and equipment to your digital farm.',
+    tag: '5 min setup',
+    accent: '#2563eb',
+    img: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80',
+  },
+  {
+    number: '03',
+    icon: BarChart3,
+    title: 'Track Everything',
+    desc: 'Monitor crops, log expenses and manage stock from one dashboard.',
+    tag: 'Real-time data',
+    accent: '#7c3aed',
+    img: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80',
+  },
+  {
+    number: '04',
+    icon: TrendingUp,
+    title: 'Grow Smarter',
+    desc: 'Use insights to cut waste, boost yields and grow more profitably.',
+    tag: '+20% yield',
+    accent: '#d97706',
+    img: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=800&q=80',
+  },
+];
 
 export const HowItWorks = () => {
-  const steps = [
-    {
-      icon: UserPlus,
-      title: 'Register Farmers',
-      description: 'Create comprehensive farmer profiles with land details, contact information, and ownership records.',
-      step: '01',
-    },
-    {
-      icon: Wheat,
-      title: 'Add Crop Data',
-      description: 'Input crop types, planting dates, growth stages, and expected harvest schedules for tracking.',
-      step: '02',
-    },
-    {
-      icon: Package,
-      title: 'Track Resources',
-      description: 'Monitor seeds, fertilizers, equipment, and other farming resources in real-time inventory.',
-      step: '03',
-    },
-    {
-      icon: BarChart3,
-      title: 'Analyze Productivity',
-      description: 'Review comprehensive analytics, generate detailed reports, and optimize farm operations.',
-      step: '04',
-    },
-  ];
+  const s0 = steps[0]; const I0 = s0.icon;
+  const s1 = steps[1]; const I1 = s1.icon;
+  const s2 = steps[2]; const I2 = s2.icon;
+  const s3 = steps[3]; const I3 = s3.icon;
 
   return (
-    <section className="relative py-24 md:py-32 bg-white overflow-hidden">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-0 w-96 h-96 bg-green-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-green-600/5 rounded-full blur-3xl" />
-      </div>
+    <section id="how-it-works" className="py-24 bg-gray-50 overflow-hidden">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
-      <div className="container max-w-7xl mx-auto px-6 md:px-10 relative z-10">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16 md:mb-20"
-        >
-          <div className="inline-block mb-4">
-            <span
-              className="text-xs uppercase tracking-wider font-semibold text-green-600 bg-green-50 px-4 py-2 rounded-full border border-green-200"
-              style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-            >
-              How It Works
-            </span>
-          </div>
-          <h2
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 tracking-tight"
-            style={{ fontFamily: 'Sora, sans-serif' }}
-          >
-            Get started in
-            <br />
-            <span className="bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">
-              four simple steps
-            </span>
+        <div className="text-center mb-14">
+          <span className="inline-block bg-green-50 text-green-700 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full border border-green-200 mb-4">
+            How It Works
+          </span>
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
+            Four steps to a <span className="text-green-600">smarter farm</span>
           </h2>
-          <p
-            className="text-gray-600 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed"
-            style={{ fontFamily: 'Inter, sans-serif' }}
-          >
-            From registration to optimization, our streamlined process makes farm management effortless
+          <p className="text-gray-400 text-lg max-w-md mx-auto">
+            No technical knowledge needed. Up and running in minutes.
           </p>
-        </motion.div>
-
-        {/* Steps Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
-          {steps.map((step, index) => (
-            <StepCard
-              key={index}
-              icon={step.icon}
-              title={step.title}
-              description={step.description}
-              step={step.step}
-              index={index}
-              isLast={index === steps.length - 1}
-            />
-          ))}
         </div>
 
-        {/* Bottom CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="text-center mt-16 md:mt-20"
-        >
-          <p
-            className="text-gray-600 mb-6 text-lg"
-            style={{ fontFamily: 'Inter, sans-serif' }}
-          >
-            Ready to streamline your farm management?
-          </p>
-          <a
-            href="/register"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-green-600 to-green-500 text-white font-semibold rounded-xl shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 hover:scale-105 transition-all duration-300"
-            style={{ fontFamily: 'Inter, sans-serif' }}
-          >
-            Get Started Now
-            <ArrowRight className="w-5 h-5" />
-          </a>
-        </motion.div>
-      </div>
+        {/* Bento grid */}
+        <div className="grid grid-cols-12 gap-4" style={{ gridTemplateRows: '280px 280px' }}>
 
-      {/* Bottom gradient line */}
-      <div
-        className="absolute w-full h-px bottom-0 left-0 z-0"
-        style={{
-          background:
-            "radial-gradient(50% 50% at 50% 50%, rgba(34,197,94,0.24) 0%, rgba(34,197,94,0) 100%)",
-        }}
-      />
+          {/* Step 01 — tall left, spans 2 rows */}
+          <div className="col-span-12 md:col-span-5 row-span-2 relative rounded-3xl overflow-hidden group shadow-sm hover:shadow-xl transition-shadow duration-300">
+            <img src={s0.img} alt={s0.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+            <div className="absolute top-5 left-5">
+              <span className="text-xs font-bold px-3 py-1.5 rounded-full text-white" style={{ backgroundColor: s0.accent }}>{s0.tag}</span>
+            </div>
+            <span className="absolute top-5 right-5 text-7xl font-black text-white/30 leading-none select-none">{s0.number}</span>
+            <div className="absolute bottom-0 left-0 right-0 p-7">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4" style={{ backgroundColor: s0.accent }}>
+                <I0 className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">{s0.title}</h3>
+              <p className="text-gray-300 text-sm leading-relaxed">{s0.desc}</p>
+            </div>
+          </div>
+
+          {/* Step 02 — top right wide */}
+          <div className="col-span-12 md:col-span-7 row-span-1 relative rounded-3xl overflow-hidden group shadow-sm hover:shadow-xl transition-shadow duration-300">
+            <img src={s1.img} alt={s1.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent" />
+            <div className="absolute top-5 left-5">
+              <span className="text-xs font-bold px-3 py-1.5 rounded-full text-white" style={{ backgroundColor: s1.accent }}>{s1.tag}</span>
+            </div>
+            <span className="absolute top-5 right-5 text-7xl font-black text-white/30 leading-none select-none">{s1.number}</span>
+            <div className="absolute bottom-0 left-0 p-6 flex items-end gap-4">
+              <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: s1.accent }}>
+                <I1 className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white">{s1.title}</h3>
+                <p className="text-gray-300 text-sm">{s1.desc}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Step 03 — bottom middle */}
+          <div className="col-span-12 md:col-span-4 row-span-1 relative rounded-3xl overflow-hidden group shadow-sm hover:shadow-xl transition-shadow duration-300">
+            <img src={s2.img} alt={s2.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+            <div className="absolute top-4 left-4">
+              <span className="text-xs font-bold px-3 py-1.5 rounded-full text-white" style={{ backgroundColor: s2.accent }}>{s2.tag}</span>
+            </div>
+            <span className="absolute top-4 right-4 text-6xl font-black text-white/30 leading-none select-none">{s2.number}</span>
+            <div className="absolute bottom-0 left-0 right-0 p-5">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ backgroundColor: s2.accent }}>
+                <I2 className="w-5 h-5 text-white" />
+              </div>
+              <h3 className="text-lg font-bold text-white mb-1">{s2.title}</h3>
+              <p className="text-gray-300 text-xs leading-relaxed">{s2.desc}</p>
+            </div>
+          </div>
+
+          {/* Step 04 — solid colored box with full-width image */}
+          <div className="col-span-12 md:col-span-3 row-span-1 relative rounded-3xl overflow-hidden group shadow-sm hover:shadow-xl transition-shadow duration-300">
+            {/* Full background image */}
+            <img src={s3.img} alt={s3.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+            {/* Dark overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+            <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10" />
+            <div className="absolute -bottom-6 -left-6 w-28 h-28 rounded-full bg-white/10" />
+            <div className="relative z-10 flex flex-col justify-between h-full p-7">
+              <div>
+                <span className="text-[10px] font-bold px-3 py-1 rounded-full text-white" style={{ backgroundColor: s3.accent }}>{s3.tag}</span>
+              </div>
+              <span className="absolute top-4 right-5 text-7xl font-black text-white/30 leading-none select-none">{s3.number}</span>
+              <div>
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-4" style={{ backgroundColor: s3.accent }}>
+                  <I3 className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2">{s3.title}</h3>
+                <p className="text-white/80 text-sm leading-relaxed">{s3.desc}</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </section>
   );
 };
-
-

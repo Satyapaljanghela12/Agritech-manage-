@@ -1,8 +1,7 @@
 import { ReactNode, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { AIChatbot } from './AIChatbot';
-import { WeatherWidget } from './WeatherWidget';
-import { LocationMap } from './LocationMap';
+import { FarmCalendar } from './FarmCalendar';
 import {
   LayoutDashboard,
   MapPin,
@@ -15,9 +14,6 @@ import {
   LogOut,
   Menu,
   X,
-  Sprout,
-  ChevronLeft,
-  ChevronRight,
   CloudSun,
 } from 'lucide-react';
 
@@ -42,7 +38,6 @@ export const Layout = ({ children, currentPage, onNavigate }: LayoutProps) => {
   const { profile, signOut } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
 
   const handleSignOut = async () => {
     try {
@@ -140,12 +135,12 @@ export const Layout = ({ children, currentPage, onNavigate }: LayoutProps) => {
         </div>
       </aside>
 
-      <div className="lg:pl-64 lg:pr-80">
-        <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40">
+      <div className="lg:pl-64">
+        <header className="bg-gray-50 dark:bg-gray-900">
           <div className="flex items-center justify-between px-4 py-4">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition"
+              className="lg:hidden p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition"
             >
               {sidebarOpen ? (
                 <X className="w-6 h-6 text-gray-600 dark:text-gray-300" />
@@ -159,23 +154,13 @@ export const Layout = ({ children, currentPage, onNavigate }: LayoutProps) => {
             </h2>
 
             <div className="flex items-center gap-2">
+              <FarmCalendar />
               <button
                 onClick={() => onNavigate('notifications')}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition relative"
+                className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition relative"
                 title="View notifications"
               >
                 <Bell className="w-5 h-5 text-gray-600 dark:text-gray-300" />
-              </button>
-              <button
-                onClick={() => setRightSidebarOpen(!rightSidebarOpen)}
-                className="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition"
-                title="Toggle weather and map"
-              >
-                {rightSidebarOpen ? (
-                  <ChevronRight className="w-6 h-6 text-gray-600 dark:text-gray-300" />
-                ) : (
-                  <ChevronLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
-                )}
               </button>
             </div>
           </div>
@@ -184,36 +169,10 @@ export const Layout = ({ children, currentPage, onNavigate }: LayoutProps) => {
         <main className="p-4 lg:p-6">{children}</main>
       </div>
 
-      <aside
-        className={`fixed inset-y-0 right-0 z-30 w-80 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 transform transition-transform duration-200 lg:translate-x-0 overflow-y-auto ${
-          rightSidebarOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-      >
-        <div className="p-4 space-y-4">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="font-semibold text-gray-800 dark:text-gray-100">Location & Weather</h3>
-            <button
-              onClick={() => setRightSidebarOpen(false)}
-              className="lg:hidden p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
-              title="Close sidebar"
-            >
-              <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-            </button>
-          </div>
-
-          <WeatherWidget />
-
-          <LocationMap location={profile?.location} />
-        </div>
-      </aside>
-
-      {(sidebarOpen || (rightSidebarOpen && window.innerWidth < 1024)) && (
+      {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
-          onClick={() => {
-            setSidebarOpen(false);
-            setRightSidebarOpen(false);
-          }}
+          onClick={() => setSidebarOpen(false)}
         />
       )}
 
