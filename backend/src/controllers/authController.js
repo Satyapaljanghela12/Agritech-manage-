@@ -96,6 +96,15 @@ export const updateProfile = async (req, res) => {
 };
 
 export const googleCallback = async (req, res) => {
-  const token = generateToken(req.user._id);
-  res.redirect(`http://localhost:5173/auth/callback?token=${token}`);
+  try {
+    if (!req.user) {
+      return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/callback?error=auth_failed`);
+    }
+    const token = generateToken(req.user._id);
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    res.redirect(`${frontendUrl}/auth/callback?token=${token}`);
+  } catch (error) {
+    console.error('Google callback error:', error);
+    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/callback?error=server_error`);
+  }
 };
